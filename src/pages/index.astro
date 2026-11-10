@@ -1,0 +1,149 @@
+---
+import Icone from '../components/Icone.astro';
+import { categorias, moeda, produtos } from '../data/catalogo';
+import '../styles/vitrine.css';
+
+const instagram = 'https://www.instagram.com/instintocloset/';
+const whatsapp = String(import.meta.env.PUBLIC_WHATSAPP_NUMBER ?? '').trim();
+const foto = (arquivo: string) => import.meta.env.BASE_URL.replace(/\/$/, '') + '/fotos/' + arquivo;
+---
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Conheça a vitrine Instinto Closet. Explore peças, inspire-se nos looks e monte sua sacola." />
+    <meta name="robots" content="noindex" />
+    <meta name="theme-color" content="#f9f5ed" />
+    <link rel="icon" href={foto('simbolo.webp')} />
+    <title>Instinto Closet · Moda feminina</title>
+  </head>
+  <body data-whatsapp={whatsapp} data-fotos={foto('')}>
+    <a href="#principal" class="skip">Ir para o conteúdo</a>
+    <div class="faixa"><span aria-hidden="true">✦</span> Moda feminina · Estilo · Atitude <span aria-hidden="true">✦</span></div>
+    <header class="topo">
+      <div class="container topo-conteudo">
+        <a class="marca" href="#" aria-label="Instinto Closet, início">
+          <img src={foto('simbolo.webp')} alt="" width="36" height="36" /><span class="marca-letras"><span>INSTINTO</span><small>CLOSET</small></span>
+        </a>
+        <nav aria-label="Navegação principal">
+          <a href="#pecas">Peças</a><a href="#colecao">Coleção</a><a href="#looks">Looks</a>
+        </nav>
+        <button class="sacola-botao" type="button" data-abrir-sacola aria-label="Abrir sacola, 0 itens">
+          <Icone nome="sacola" /><span class="sacola-label">Sacola</span><span class="contador" data-contador>0</span>
+        </button>
+      </div>
+    </header>
+
+    <main id="principal">
+      <section class="hero container" id="colecao" aria-labelledby="titulo-hero">
+        <div class="hero-texto">
+          <p class="sobretitulo"><span></span> Edit 01 <b>·</b> Instinto Closet</p>
+          <h1 id="titulo-hero">Vista o seu<br /><em>instinto.</em></h1>
+          <p class="hero-descricao">Peças para combinar do seu jeito, do jeans de todo dia ao brilho da noite.</p>
+          <a class="botao primario" href="#pecas">Explorar a vitrine <Icone nome="seta" tamanho={18} /></a>
+          <div class="hero-rodape"><span>01 / O EDIT</span><span aria-hidden="true">✦</span></div>
+        </div>
+        <div class="hero-fotos">
+          <figure class="hero-principal">
+            <img src={foto('tule.webp')} alt="Look com blusa de tule marrom, saia preta e botas" width="402" height="753" fetchpriority="high" />
+            <figcaption>01 — Tule &amp; textura</figcaption>
+          </figure>
+          <figure class="hero-secundaria">
+            <img src={foto('jeans.webp')} alt="Look com blusa marrom drapeada e jeans azul claro" width="295" height="624" />
+            <figcaption>02 — Denim</figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <section class="container catalogo" id="pecas" aria-labelledby="titulo-pecas">
+        <div class="cabecalho-secao">
+          <div><p class="sobretitulo"><span></span> O catálogo</p><h2 id="titulo-pecas">Escolha suas <em>peças.</em></h2></div>
+          <p class="aviso-demo">Vitrine de demonstração <span>·</span> Preços e tamanhos ilustrativos</p>
+        </div>
+        <div class="barra-filtro">
+          <div class="filtros" aria-label="Filtrar por categoria">
+            {categorias.map((categoria, i) => <button type="button" data-filtro={categoria} aria-pressed={i === 0}>{categoria}</button>)}
+          </div>
+          <span class="total-pecas" data-total-pecas aria-live="polite">{produtos.length} peças</span>
+        </div>
+        <div class="grade">
+          {produtos.map((produto, i) => (
+            <article class="produto" data-categoria={produto.categoria}>
+              <button type="button" class="produto-foto" data-produto={produto.id} aria-label={'Ver ' + produto.nome}>
+                <img src={foto(produto.foto)} alt={produto.nome + ' na cor ' + produto.cor.toLowerCase()} style={{ objectPosition: produto.posicao }} loading="lazy" width="400" height="520" />
+                {i === 0 && <span class="etiqueta">Edit 01</span>}
+                <span class="produto-mais"><Icone nome="mais" tamanho={19} /></span>
+              </button>
+              <div class="produto-infos"><h3><button type="button" data-produto={produto.id}>{produto.nome}</button></h3><strong>{moeda(produto.preco)}</strong></div>
+              <p>{produto.cor} <span>·</span> {Object.entries(produto.tamanhos).filter(([, saldo]) => saldo > 0).map(([tamanho]) => tamanho).join(' / ')}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section class="editorial container" id="looks" aria-labelledby="titulo-looks">
+        <div class="editorial-foto"><img src={foto('instinto.webp')} alt="Duas mulheres vestem tops de tons contrastantes com jeans" loading="lazy" width="262" height="376" /></div>
+        <div class="editorial-texto">
+          <p class="sobretitulo"><span></span> Caderno de looks</p>
+          <h2 id="titulo-looks">Do seu <em>jeito.</em></h2>
+          <p>Jeans amplo e top ajustado são o ponto de partida. Escolha a blusa canelada para o dia ou o corset para mudar o visual.</p>
+          <div class="links-look">
+            <button type="button" data-produto="calca-wide-leg">Calça wide leg <Icone nome="diagonal" tamanho={16} /></button>
+            <button type="button" data-produto="blusa-canelada">Blusa canelada <Icone nome="diagonal" tamanho={16} /></button>
+            <button type="button" data-produto="corset">Corset com botões <Icone nome="diagonal" tamanho={16} /></button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="rodape">
+      <div class="container rodape-conteudo">
+        <div class="rodape-marca"><img src={foto('simbolo.webp')} alt="" loading="lazy" width="56" height="56" /><div><strong>Instinto Closet</strong><p>Sua essência, suas escolhas, seu instinto.</p></div></div>
+        <a href={instagram} target="_blank" rel="noopener noreferrer"><Icone nome="insta" /> @instintocloset <Icone nome="diagonal" tamanho={15} /></a>
+      </div>
+    </footer>
+
+    <dialog class="modal-produto" id="produto" aria-labelledby="nome-produto">
+      <button type="button" class="fechar" data-fechar aria-label="Fechar detalhes"><Icone nome="fechar" /></button>
+      <div class="detalhe">
+        <img data-foto-produto alt="" width="350" height="450" />
+        <div class="detalhe-infos">
+          <p class="sobretitulo" data-categoria-produto></p>
+          <h2 id="nome-produto"></h2>
+          <p class="detalhe-preco" data-preco-produto></p>
+          <p class="detalhe-descricao" data-descricao-produto></p>
+          <p class="detalhe-cor">Cor <strong data-cor-produto></strong></p>
+          <form data-adicionar>
+            <fieldset><legend>Escolha o tamanho</legend><div class="tamanhos" data-tamanhos></div></fieldset>
+            <button class="botao primario" type="submit">Adicionar à sacola <Icone nome="sacola" tamanho={18} /></button>
+            <p class="feedback" data-erro-produto role="status"></p>
+          </form>
+        </div>
+      </div>
+    </dialog>
+
+    <dialog class="gaveta" id="sacola" aria-labelledby="titulo-sacola">
+      <div class="gaveta-layout">
+        <header class="gaveta-topo"><div><p class="sobretitulo">Sua seleção</p><h2 id="titulo-sacola">Sacola</h2></div><button type="button" class="fechar" data-fechar aria-label="Fechar sacola"><Icone nome="fechar" /></button></header>
+        <div class="gaveta-itens" data-itens></div>
+        <div class="gaveta-total" data-total hidden>
+          <p><span>Subtotal das peças</span><strong data-subtotal></strong></p>
+          { /^\d{10,15}$/.test(whatsapp) ? (
+            <a class="botao primario" data-whatsapp-link target="_blank" rel="noopener noreferrer">Continuar no WhatsApp <Icone nome="diagonal" tamanho={18} /></a>
+          ) : (
+            <button type="button" class="botao primario" data-mostrar-mensagem>Prévia da mensagem <Icone nome="seta" tamanho={18} /></button>
+          )}
+          <small>Disponibilidade e entrega são confirmadas pela loja.</small>
+          <div class="mensagem" data-mensagem hidden>
+            <label for="texto-mensagem">Mensagem para o WhatsApp</label>
+            <textarea id="texto-mensagem" readonly rows="5"></textarea>
+            <button type="button" class="botao secundario" data-copiar>Copiar mensagem</button>
+            <p class="feedback" data-copia-status role="status"></p>
+          </div>
+        </div>
+      </div>
+    </dialog>
+    <script src="../vitrine.ts"></script>
+  </body>
+</html>
